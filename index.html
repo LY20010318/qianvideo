@@ -1,17 +1,29 @@
-
 <!DOCTYPE html>
 <html lang="zh-CN">
 
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 
   <title>成长记录</title>
 
   <style>
 
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      margin: 0;
+      width: 100%;
+      min-height: 100%;
+    }
+
+
     /* =========================
-       页面背景
+       页面背景（电脑）
     ========================= */
 
     body {
@@ -20,13 +32,18 @@
       background-image: url("background.jpg");
       background-size: cover;
       background-position: center;
+      background-repeat: no-repeat;
       background-attachment: fixed;
+      background-color: #fff0f5;
 
       min-height: 100vh;
+      min-height: 100svh;
 
       display: flex;
       justify-content: center;
       align-items: center;
+
+      overflow: hidden;
     }
 
 
@@ -37,18 +54,32 @@
     video {
       width: 90%;
       max-width: 700px;
+      max-height: 85vh;
+      max-height: 85svh;
 
       border-radius: 15px;
 
       box-shadow:
         0 10px 35px
         rgba(0,0,0,0.4);
+
+      object-fit: contain;
+      background: #000;
+
+      /*
+        对部分安卓浏览器的视频合成层更稳一些
+      */
+      -webkit-transform: translateZ(0);
+      transform: translateZ(0);
+
+      position: relative;
+      z-index: 2;
     }
 
 
     /* =========================
        重播整体区域
-       图片和气泡一起移动
+       保留你原来的位置
     ========================= */
 
     #replayArea {
@@ -56,15 +87,9 @@
 
       position: fixed;
 
-      /* =====================
-         整体位置
-         修改这里即可
-      ===================== */
-
+      /* 你原来的整体位置 */
       left: 88%;
       top: 15%;
-
-      /* ===================== */
 
       transform: translate(-50%, -50%);
 
@@ -72,11 +97,14 @@
 
       /* 图片和气泡之间距离 */
       gap: 0px;
+
+      z-index: 20;
     }
 
 
     /* =========================
        点我重播 气泡
+       保留你原来的效果
     ========================= */
 
     #replayText {
@@ -104,6 +132,9 @@
         rgba(0,0,0,0.15);
 
       cursor: pointer;
+
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
     }
 
 
@@ -134,19 +165,12 @@
 
     /* =========================
        重新播放图片
+       保留你原来的大小
     ========================= */
 
     #replayButton {
-
-      /* =====================
-         图片大小
-         修改这里
-      ===================== */
-
       width: 280px;
       height: 280px;
-
-      /* ===================== */
 
       object-fit: contain;
 
@@ -155,6 +179,9 @@
       /* 保留原来的动画 */
       transition:
         transform 0.2s;
+
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
     }
 
 
@@ -164,109 +191,119 @@
     ========================= */
 
     #replayButton:hover {
-
       transform:
         scale(1.08);
-
     }
 
 
-
     /* =========================
-       手机适配（不改变电脑原有效果）
-       屏幕宽度 600px 以下才生效
+       手机适配
+       只调整背景和视频
+       不改 replay 原来的位置/大小
     ========================= */
+
     @media (max-width: 600px) {
 
       body {
-        /* 手机完整显示背景图，不裁切 */
+        /*
+          contain = 整张背景图完整显示
+          图片比例和手机不同时会留空白
+        */
         background-size: contain;
         background-position: center center;
         background-repeat: no-repeat;
+
+        /*
+          iPhone / 国产安卓浏览器对 fixed 背景支持不一致，
+          手机端改成 scroll 更稳定
+        */
         background-attachment: scroll;
 
-        /* 背景比例与手机不一致时的留白颜色 */
+        /*
+          空白区域的底色
+        */
         background-color: #fff0f5;
 
         min-height: 100vh;
         min-height: 100svh;
-
-        overflow: hidden;
       }
 
-      /* 手机上的视频大小 */
+
+      /* 手机上的视频只调整大小 */
+
       video {
         width: 94%;
         max-width: none;
+
+        max-height: 72vh;
         max-height: 72svh;
+
         border-radius: 12px;
       }
 
-      /* 手机上的“气泡 + 重播图片”整体位置 */
-      #replayArea {
-        left: 50%;
-        top: 20%;
 
-        gap: 0px;
-      }
+      /* =========================
+         粉色小花装饰
+      ========================= */
 
-      /* 手机上的重播图片大小 */
-      #replayButton {
-        width: 170px;
-        height: 170px;
-      }
-
-      /* 手机上的气泡大小和相对位置 */
-      #replayText {
-        font-size: 14px;
-        padding: 9px 13px;
-        border-radius: 14px;
-
-        /* 第一个数左右，第二个数上下 */
-        transform: translateX(35px) translateY(-20px);
-      }
-
-      /* 手机上的气泡小三角 */
-      #replayText::after {
-        right: -10px;
-
-        border-top-width: 7px;
-        border-bottom-width: 7px;
-        border-left-width: 10px;
-      }
-    }
-
-
-    @media (max-width: 600px) {
       body::before,
       body::after {
         position: fixed;
-        z-index: 0;
+
+        z-index: 1;
+
         pointer-events: none;
-        font-size: 22px;
+
+        font-size: 20px;
         line-height: 1.9;
-        opacity: 0.65;
+
+        opacity: 0.60;
+
         white-space: pre;
       }
 
+
       body::before {
-        content: "🌸  🌼\A   🌷\A 🌸   🌼";
+        content:
+          "🌸   🌼\A"
+          "   🌷\A"
+          "🌸    🌼";
+
         left: 8px;
-        top: 8%;
+        top: 7%;
       }
 
+
       body::after {
-        content: "🌷   🌸\A  🌼\A 🌸  🌷";
+        content:
+          "🌷    🌸\A"
+          "   🌼\A"
+          "🌸   🌷";
+
         right: 8px;
-        bottom: 8%;
+        bottom: 7%;
+
         text-align: right;
       }
 
-      video,
+    }
+
+
+    /* =========================
+       很窄的小屏幕
+       只防止 replay 超出屏幕
+    ========================= */
+
+    @media (max-width: 380px) {
+
       #replayArea {
-        position: relative;
-        z-index: 1;
+        /*
+          只在特别窄的屏幕做边界保护
+          正常手机仍保持原来的 88% / 15%
+        */
+        max-width: 100vw;
       }
+
     }
 
   </style>
@@ -279,12 +316,29 @@
 
   <!-- =========================
        视频
+
+       兼容：
+       Safari / Chrome / Edge
+       华为 / 荣耀 / 小米 / OPPO / vivo
+       百度 / 微信 / QQ 等常见内置浏览器
+
+       注意：
+       各厂商不同系统版本仍可能存在差异，
+       H5 无法保证所有版本完全一致。
   ========================= -->
 
   <video
     id="myVideo"
+
     autoplay
+
     playsinline
+    webkit-playsinline
+
+    x5-playsinline
+    x5-video-player-type="h5-page"
+    x5-video-player-fullscreen="false"
+
     controls
     preload="metadata"
   >
@@ -292,6 +346,8 @@
     <source
       src="qianvideo1.mp4"
       type="video/mp4">
+
+    你的浏览器不支持视频播放。
 
   </video>
 
@@ -308,6 +364,8 @@
 
     <div
       id="replayText"
+      role="button"
+      tabindex="0"
       onclick="replayVideo()"
     >
 
@@ -323,6 +381,7 @@
       id="replayButton"
       src="replay.png"
       alt="重新播放"
+      draggable="false"
       onclick="replayVideo()"
     >
 
@@ -340,7 +399,8 @@
        true  = 静音
        false = 有声音
 
-       ↓↓↓ 只需要修改这里 ↓↓↓
+       自动播放时推荐 true。
+       很多浏览器会阻止“有声音自动播放”。
     ============================ */
 
     const MUTE_VIDEO = true;
@@ -363,6 +423,33 @@
       );
 
 
+    const replayText =
+      document.getElementById(
+        "replayText"
+      );
+
+
+
+    /* ============================
+       增强内联播放兼容
+    ============================ */
+
+    video.setAttribute(
+      "playsinline",
+      ""
+    );
+
+    video.setAttribute(
+      "webkit-playsinline",
+      ""
+    );
+
+    video.setAttribute(
+      "x5-playsinline",
+      ""
+    );
+
+
 
     /* ============================
        设置静音
@@ -371,21 +458,164 @@
     video.muted =
       MUTE_VIDEO;
 
+    video.defaultMuted =
+      MUTE_VIDEO;
+
 
 
     /* ============================
        尝试自动播放
     ============================ */
 
-    video.play().catch(
-      function() {
+    function tryAutoPlay() {
 
-        console.log(
-          "浏览器阻止了自动播放"
+      const playPromise =
+        video.play();
+
+
+      if (
+        playPromise &&
+        typeof playPromise.catch === "function"
+      ) {
+
+        playPromise.catch(
+          function() {
+
+            console.log(
+              "浏览器阻止了自动播放"
+            );
+
+          }
         );
 
       }
+
+    }
+
+
+
+    /*
+      DOM 准备好以后尝试播放
+    */
+
+    if (
+      document.readyState === "loading"
+    ) {
+
+      document.addEventListener(
+        "DOMContentLoaded",
+        tryAutoPlay
+      );
+
+    } else {
+
+      tryAutoPlay();
+
+    }
+
+
+
+    /* ============================
+       视频播放时
+       确保 replay 区域隐藏
+    ============================ */
+
+    video.addEventListener(
+      "play",
+
+      function() {
+
+        replayArea.style.display =
+          "none";
+
+      }
     );
+
+
+
+    /* ============================
+       强制隐藏视频
+
+       主要针对：
+       百度 App / 部分国产安卓浏览器
+       视频结束后仍残留播放框的问题
+    ============================ */
+
+    function hideVideoCompletely() {
+
+      video.pause();
+
+      video.controls =
+        false;
+
+
+      /*
+        多种隐藏方式一起使用，
+        避免某些浏览器的视频层残留
+      */
+
+      video.style.display =
+        "none";
+
+      video.style.visibility =
+        "hidden";
+
+      video.style.opacity =
+        "0";
+
+      video.style.width =
+        "0px";
+
+      video.style.height =
+        "0px";
+
+      video.style.maxWidth =
+        "0px";
+
+      video.style.maxHeight =
+        "0px";
+
+      video.style.pointerEvents =
+        "none";
+
+    }
+
+
+
+    /* ============================
+       恢复视频
+    ============================ */
+
+    function showVideoAgain() {
+
+      video.style.display =
+        "block";
+
+      video.style.visibility =
+        "visible";
+
+      video.style.opacity =
+        "1";
+
+      video.style.width =
+        "";
+
+      video.style.height =
+        "";
+
+      video.style.maxWidth =
+        "";
+
+      video.style.maxHeight =
+        "";
+
+      video.style.pointerEvents =
+        "auto";
+
+      video.controls =
+        true;
+
+    }
 
 
 
@@ -398,18 +628,22 @@
 
       function() {
 
-
-        /* 视频消失 */
-
-        video.style.display =
-          "none";
+        hideVideoCompletely();
 
 
-        /* 图片 + 气泡出现 */
+        /*
+          下一帧再显示 replay，
+          对部分安卓浏览器更稳定
+        */
 
-        replayArea.style.display =
-          "flex";
+        requestAnimationFrame(
+          function() {
 
+            replayArea.style.display =
+              "flex";
+
+          }
+        );
 
       }
     );
@@ -429,23 +663,102 @@
         "none";
 
 
-      /* 视频重新出现 */
+      /* 恢复视频 */
 
-      video.style.display =
-        "block";
-
-
-      /* 回到视频开头 */
-
-      video.currentTime = 0;
+      showVideoAgain();
 
 
-      /* 播放 */
+      /* 回到开头 */
 
-      video.play();
+      try {
 
+        video.currentTime =
+          0;
+
+      } catch (e) {
+
+        console.log(
+          "无法立即跳回视频开头",
+          e
+        );
+
+      }
+
+
+      /* 重新播放 */
+
+      const playPromise =
+        video.play();
+
+
+      if (
+        playPromise &&
+        typeof playPromise.catch === "function"
+      ) {
+
+        playPromise.catch(
+          function() {
+
+            console.log(
+              "浏览器阻止了重新播放"
+            );
+
+          }
+        );
+
+      }
 
     }
+
+
+
+    /* ============================
+       气泡键盘操作
+       电脑端也可以按 Enter / 空格重播
+    ============================ */
+
+    replayText.addEventListener(
+      "keydown",
+
+      function(event) {
+
+        if (
+          event.key === "Enter" ||
+          event.key === " "
+        ) {
+
+          event.preventDefault();
+
+          replayVideo();
+
+        }
+
+      }
+    );
+
+
+
+    /* ============================
+       页面切到后台时暂停
+       减少部分手机浏览器异常占用
+    ============================ */
+
+    document.addEventListener(
+      "visibilitychange",
+
+      function() {
+
+        if (
+          document.hidden &&
+          !video.ended
+        ) {
+
+          video.pause();
+
+        }
+
+      }
+    );
 
 
   </script>
@@ -453,4 +766,4 @@
 
 </body>
 
-
+</html>
