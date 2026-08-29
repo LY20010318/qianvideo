@@ -186,7 +186,7 @@
         background-attachment: scroll;
 
         /* 背景比例与手机不一致时的留白颜色 */
-        background-color:  #fff5f5;
+        background-color: #fff0f5;
 
         min-height: 100vh;
         min-height: 100svh;
@@ -233,6 +233,39 @@
         border-top-width: 7px;
         border-bottom-width: 7px;
         border-left-width: 10px;
+      }
+    }
+
+
+    @media (max-width: 600px) {
+      body::before,
+      body::after {
+        position: fixed;
+        z-index: 0;
+        pointer-events: none;
+        font-size: 22px;
+        line-height: 1.9;
+        opacity: 0.65;
+        white-space: pre;
+      }
+
+      body::before {
+        content: "🌸  🌼\A   🌷\A 🌸   🌼";
+        left: 8px;
+        top: 8%;
+      }
+
+      body::after {
+        content: "🌷   🌸\A  🌼\A 🌸  🌷";
+        right: 8px;
+        bottom: 8%;
+        text-align: right;
+      }
+
+      video,
+      #replayArea {
+        position: relative;
+        z-index: 1;
       }
     }
 
