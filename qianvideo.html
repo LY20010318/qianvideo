@@ -1,0 +1,357 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>成长记录</title>
+
+  <style>
+
+    /* =========================
+       页面背景
+    ========================= */
+
+    body {
+      margin: 0;
+
+      background-image: url("background.jpg");
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+
+      min-height: 100vh;
+
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+
+    /* =========================
+       视频
+    ========================= */
+
+    video {
+      width: 90%;
+      max-width: 700px;
+
+      border-radius: 15px;
+
+      box-shadow:
+        0 10px 35px
+        rgba(0,0,0,0.4);
+    }
+
+
+    /* =========================
+       重播整体区域
+       图片和气泡一起移动
+    ========================= */
+
+    #replayArea {
+      display: none;
+
+      position: fixed;
+
+      /* =====================
+         整体位置
+         修改这里即可
+      ===================== */
+
+      left: 88%;
+      top: 15%;
+
+      /* ===================== */
+
+      transform: translate(-50%, -50%);
+
+      align-items: center;
+
+      /* 图片和气泡之间距离 */
+      gap: 0px;
+    }
+
+
+    /* =========================
+       点我重播 气泡
+    ========================= */
+
+    #replayText {
+      transform: translateX(80px) translateY(-35px);
+
+      position: relative;
+
+      font-size: 20px;
+      font-weight: bold;
+
+      color: #555;
+
+      background:
+        rgba(255,255,255,0.95);
+
+      padding:
+        12px 18px;
+
+      border-radius: 18px;
+
+      white-space: nowrap;
+
+      box-shadow:
+        0 5px 20px
+        rgba(0,0,0,0.15);
+
+      cursor: pointer;
+    }
+
+
+    /* 气泡右边的小三角 */
+
+    #replayText::after {
+      content: "";
+
+      position: absolute;
+
+      right: -12px;
+      top: 50%;
+
+      transform:
+        translateY(-50%);
+
+      border-top:
+        9px solid transparent;
+
+      border-bottom:
+        9px solid transparent;
+
+      border-left:
+        12px solid
+        rgba(255,255,255,0.95);
+    }
+
+
+    /* =========================
+       重新播放图片
+    ========================= */
+
+    #replayButton {
+
+      /* =====================
+         图片大小
+         修改这里
+      ===================== */
+
+      width: 280px;
+      height: 280px;
+
+      /* ===================== */
+
+      object-fit: contain;
+
+      cursor: pointer;
+
+      /* 保留原来的动画 */
+      transition:
+        transform 0.2s;
+    }
+
+
+    /* =========================
+       鼠标放到图片上
+       图片放大
+    ========================= */
+
+    #replayButton:hover {
+
+      transform:
+        scale(1.08);
+
+    }
+
+
+  </style>
+
+</head>
+
+
+<body>
+
+
+  <!-- =========================
+       视频
+  ========================= -->
+
+  <video
+    id="myVideo"
+    autoplay
+    playsinline
+    controls
+  >
+
+    <source
+      src="qianvideo1.mp4"
+      type="video/mp4">
+
+  </video>
+
+
+
+  <!-- =========================
+       视频结束后的区域
+  ========================= -->
+
+  <div id="replayArea">
+
+
+    <!-- 点我重播气泡 -->
+
+    <div
+      id="replayText"
+      onclick="replayVideo()"
+    >
+
+      点我重播
+
+    </div>
+
+
+
+    <!-- 原来的 replay 图片 -->
+
+    <img
+      id="replayButton"
+      src="replay.png"
+      alt="重新播放"
+      onclick="replayVideo()"
+    >
+
+
+  </div>
+
+
+
+  <script>
+
+
+    /* ============================
+       🔊 静音开关
+
+       true  = 静音
+       false = 有声音
+
+       ↓↓↓ 只需要修改这里 ↓↓↓
+    ============================ */
+
+    const MUTE_VIDEO = true;
+
+
+
+    /* ============================
+       获取元素
+    ============================ */
+
+    const video =
+      document.getElementById(
+        "myVideo"
+      );
+
+
+    const replayArea =
+      document.getElementById(
+        "replayArea"
+      );
+
+
+
+    /* ============================
+       设置静音
+    ============================ */
+
+    video.muted =
+      MUTE_VIDEO;
+
+
+
+    /* ============================
+       尝试自动播放
+    ============================ */
+
+    video.play().catch(
+      function() {
+
+        console.log(
+          "浏览器阻止了自动播放"
+        );
+
+      }
+    );
+
+
+
+    /* ============================
+       视频播放结束
+    ============================ */
+
+    video.addEventListener(
+      "ended",
+
+      function() {
+
+
+        /* 视频消失 */
+
+        video.style.display =
+          "none";
+
+
+        /* 图片 + 气泡出现 */
+
+        replayArea.style.display =
+          "flex";
+
+
+      }
+    );
+
+
+
+    /* ============================
+       点击重新播放
+    ============================ */
+
+    function replayVideo() {
+
+
+      /* 图片 + 气泡消失 */
+
+      replayArea.style.display =
+        "none";
+
+
+      /* 视频重新出现 */
+
+      video.style.display =
+        "block";
+
+
+      /* 回到视频开头 */
+
+      video.currentTime = 0;
+
+
+      /* 播放 */
+
+      video.play();
+
+
+    }
+
+
+  </script>
+
+
+</body>
+
+
